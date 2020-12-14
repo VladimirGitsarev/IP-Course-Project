@@ -93,7 +93,7 @@ DATABASES = {
         'NAME': 'microblog',
         'USER': 'root',
         'PASSWORD': 'djdf1605',
-        'HOST': 'db',   # Or an IP Address that your DB is hosted on
+        'HOST': 'db',   
         'PORT': 3306,
     }
 }

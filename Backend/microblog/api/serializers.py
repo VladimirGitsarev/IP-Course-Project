@@ -56,8 +56,6 @@ class PostSerializer(serializers.ModelSerializer):
 
     def get_comments(self, obj):
         comments = Comment.objects.filter(post=obj.id)
-        # serializer = CommentSerializer(comments, many=True)
-        # return serializer.data
         return len(comments)
 
     def get_repost(self, obj):

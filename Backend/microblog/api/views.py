@@ -69,7 +69,7 @@ def post_list(request):
     acc = Account.objects.get(user=user)
     ids = list(acc.following.all())
     ids.append(user.id)
-    posts = Post.objects.filter(user__in=ids).order_by('-date')
+    posts = Post.objects.filter(user__in=ids, active=True).order_by('-date')
     serializer = PostSerializer(posts, many=True)
     return Response(serializer.data)
 
@@ -126,9 +126,9 @@ def user_posts(request, pk, count):
 
     acc = Account.objects.get(user=User.objects.get(id=pk))
     if count != 'all':
-        posts = acc.post_set.all().order_by('-date')[:int(count)]
+        posts = acc.post_set.all().filter(active=True).order_by('-date')[:int(count)]
     else:
-        posts = acc.post_set.all().order_by('-date')
+        posts = acc.post_set.all().filter(active=True).order_by('-date')
     serializer = PostSerializer(posts, many=True)
     
     return Response(serializer.data)
@@ -156,7 +156,7 @@ def user_follow(request, pk):
 
 @api_view(['GET'])
 def post_comments(request, pk):
-    comments = Comment.objects.filter(post=pk).order_by('-date')
+    comments = Comment.objects.filter(post=pk, active=True).order_by('-date')
     serializer = CommentSerializer(comments, many=True)
     
     return Response(serializer.data)
@@ -223,13 +223,11 @@ def popular_users(request):
 def user_followers(request):
     user = User.objects.get(username=request.user)
     acc = Account.objects.get(user=user)
-    print()
     serializer = AccountSerializer(acc.followers.all(), many=True)
     return Response(serializer.data)
 
 @api_view(['POST'])
 def search(request):
-    
     users = User.objects.filter(username__startswith=request.data['query'])
     accounts = Account.objects.filter(user__in=users)
     posts = Post.objects.filter(body__icontains=request.data['query'])
